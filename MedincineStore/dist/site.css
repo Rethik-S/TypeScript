@@ -1,0 +1,15 @@
+#signUp{
+    display: none;
+}
+#indexPage{
+    /* display: none; */
+}
+
+.navbar{
+    display: flex;
+    gap: 1rem;
+}
+
+.navbar > div{
+    cursor: pointer;
+}

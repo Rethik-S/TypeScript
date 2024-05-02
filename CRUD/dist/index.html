@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <div class="wrapper">
+        <div>
+            <h1>Table data</h1>
+            <button>Add</button>
+            <form action="submit">
+                <label for="name"></label>
+                <input type="text" name="name" id="name">
+
+                <label for="age">Age</label>
+                <input type="number" name="age" id="age">
+
+                <input type="submit" value="submit">
+                <input type="reset" value="cancel" onclick="Reset()">
+            </form>
+        </div>
+        <div>
+            <table>
+                <thead>
+                    <th>Name</th>
+                    <th>Age</th>
+                    <th>Actions</th>
+                </thead>
+                <tbody>
+                    <!-- body will be inserted -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+</body>
+
+</html>

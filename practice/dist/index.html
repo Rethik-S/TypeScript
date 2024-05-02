@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Typescript</title>
+    <script src="index.js"></script>
+    <link rel="stylesheet" href="../Styles/site.css">
+</head>
+<body>
+    <div id="homePage">
+        <h2>Home</h2>
+        <button type="button" onclick="newUserPage()">New User</button>
+        <button type="button" onclick="existingUserPage()">Existing User</button>
+    </div>
+    <div id="newUserPage">
+
+        <h3>Sign Up Page</h3>
+        <label> User Name : </label><br><input type="text" id="newUserName" onkeyup="checkNewUserName('newUserName')"><label
+            id="newUserNameMessage"></label><br>
+        <label> User Age : </label><br><input type="number" id="newUserAge" onkeyup="checkNewUserAge('newUserAge')"><label
+            id="newUserAgeMessage"></label><br>
+        <label> User Phone Number : </label><br><input type="number" id="newUserPhoneNumber"
+            onkeyup="checkNewUserPhoneNumber('newUserPhoneNumber')"><label id="newUserPhoneNumberMessage"></label><br>
+
+        <button onclick="signUp()">Sign Up</button>
+    </div>
+
+    <div id="existingUserPage">
+
+        <h3>Sign In Page</h3>
+        <label>User ID</label>
+        <input type="text" id="existingUserId">
+        <button type="button" onclick="signIn()">Sign In</button><br>
+        <label id="availableUser"></label>
+
+    </div>
+</body>
+</html>

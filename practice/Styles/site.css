@@ -1,0 +1,12 @@
+#homePage
+{
+    display: block;
+}
+
+#newUserPage{
+    display: none;
+}
+
+#existingUserPage{
+    display: none;
+}
