@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Medicsl</title>
+    <link rel="stylesheet" href="./site.css">
+    <script src="./index.js"></script>
+</head>
+
+<body>
+    <div class="wrapper" id="wrapper">
+        <div class="card">
+            <div id="homepage">
+                <h1>Online medicine store</h1><br><br>
+                <button onclick="newUser()">signUp</button>
+                <button onclick="existingUser()">SignIn</button><br><br>
+            </div>
+
+            <div id="signUp">
+                <h1>Sign Up Page</h1><br><br>
+                <label for="username">User Name:</label>
+                <input type="text" onfocusout="nameValidate()" id="username" name="username"> <span
+                    id="nameInvalid"></span>
+                <br><br>
+
+
+                <!-- <label for="age">User Age</label>
+                <input type="number" name="age" id="age"><br><br> -->
+
+                <label for="number">User Phone Number</label>
+                <input type="text" id="number" name="number" maxlength="10" placeholder="10-digit number"
+                    onfocusout="numberValidate()"> <span class="error" id="numberInvalid"></span><br><br>
+
+                <label for="email">Email</label>
+                <input type="text" onfocusout="" id="email" name="email"> <span id="emailInvalid"></span><br><br>
+
+                <label for="pass">Password</label>
+                <input type="text" name="pass" id="pass"><br><br>
+
+                <label for="confirmPass">Confirm password</label>
+                <input type="text" name="confirmPass" id="confirmPass"><br><br>
+
+                <input type="submit" value="Sign Up" onclick="signUp()">
+
+            </div>
+
+            <div id="existingUser">
+                <br>
+                <br>
+                <form action="">
+                    <label for="userID">Email</label>
+                    <input type="text" name="userID" id="userID"> <br><br>
+
+                    <label for="password">Password</label>
+                    <input type="password" name="password" id="password"><br><br>
+
+                </form>
+                <input type="submit" value="submit" onclick="login()">
+
+
+            </div>
+        </div>
+    </div>
+
+    <div id="indexPage">
+        <nav class="navbar">
+            <div onclick="showMedicineDetails()">medicine details</div>
+            <div onclick="purchase()">purchase</div>
+            <div onclick="showCancelOrder()">cancel</div>
+            <div onclick="DisplayRecharge()">Topup</div>
+            <div onclick="showBalance()">showBalance</div>
+            <div onclick="orderHistory()">order History</div>
+            <div onclick=""><a href="">logout</a></div>
+        </nav>
+        <h1 id="greeting"></h1>
+    </div>
+
+    <div id="medicineDetails" class="container">
+        <label for="name">Medicine name</label>
+        <input type="text" name="name" id="name">
+        <label for="editQuantity">quantity</label>
+        <input type="text" name="editQuantity" id="editQuantity">
+        <button onclick="editElement()">edit</button><br><br>
+        
+        <table>
+            <thead>
+                <th>Medicine ID</th>
+                <th>Medicine name</th>
+                <th>quantity</th>
+                <th>Expiry</th>
+                <th>price</th>
+                <th>Action</th>
+            </thead>
+            <tbody id="medicine-table">
+            </tbody>
+        </table>
+    </div>
+    <div id="quantity-container" class="container">
+        <label for="quantity"></label>
+        <input type="number" name="quantity" id="quantity">
+        <button onclick="setQuantity()">buy</button>
+    </div>
+
+    <div id="order-container" class="container">
+        <table>
+            <thead>
+
+                <th>Order ID</th>
+                <th>Medicine ID</th>
+                <th>User ID</th>
+                <th>Medicine Name</th>
+                <th>quantity</th>
+            </thead>
+            <tbody id="order-table">
+            </tbody>
+        </table>
+    </div>
+
+    <div id="updateBalance" class="container">
+        <h1>Recharge</h1><br><br>
+        <label for="balance">Enter the amount</label>
+        <input type="number" id="balance" name="balance">
+        <button onclick="Recharge()">Recharge</button>
+    </div>
+
+    <div id="showBalance" class="container">
+        <h1>balance</h1><br><br>
+        <p id="balance-message"></p>
+    </div>
+</body>
+
+</html>

@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="site.css">
+</head>
+
+<body>
+
+    <div class="wrapper" id="wrapper">
+        <div class="card">
+            <div id="signSwitch">
+                <h1>Metro card</h1><br>
+                <button onclick="newUser()">signUp</button>
+                <button onclick="existingUser()">SignIn</button><br><br>
+            </div>
+
+            <div id="signUp">
+                <form id="signupform">
+                    <legend>Sign Up</legend>
+                    <label for="name">Name:</label>
+                    <input type="text" id="name" name="name" required><br><br>
+                    <label for="phone">Phone:</label>
+                    <input type="tel" id="phone" name="phone" required><br><br>
+                    <label for="signuppassword">Password</label>
+                    <input type="password" name="signuppassword" id="signuppassword"><br><br>
+                    <button type="submit" id="submitBtn">Sign Up</button>
+                    <button type="reset" id="cancelBtn">Cancel</button>
+                </form>
+            </div>
+            
+            <div id="existingUser">
+                <br>
+                <br>
+                <form id="signInForm">
+                    <legend>Sign In</legend>
+                    <label for="cardNumber">Card Number</label>
+                    <input type="text" name="cardNumber" id="cardNumber"> <br><br>
+                    
+                    <label for="password">Password</label>
+                    <input type="password" name="password" id="password"><br><br>
+                    
+                    <input type="submit" value="login">
+                    <button type="reset" id="cancelBtn">Cancel</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div id="homePage">
+        <nav class="navbar">
+            <!-- <div onclick="showMedicineDetails()">medicine details</div>
+            <div onclick="purchase()">purchase</div>
+            <div onclick="showCancelOrder()">cancel</div>
+            <div onclick="DisplayRecharge()">Topup</div>
+            <div onclick="showBalance()">showBalance</div>
+            <div onclick="orderHistory()">order History</div> -->
+            <div onclick=""><a href="">logout</a></div>
+        </nav>
+        <h1 id="greeting"></h1>
+    </div>
+
+
+
+
+    <script src="index.js"></script>
+</body>
+
+</html>

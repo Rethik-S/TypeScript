@@ -407,7 +407,6 @@ function showCancelOrder() {
         let tableData = document.createElement("tr");
 
         tableData.innerHTML = `
-        <td>${OrderList[i].MedicineId}</td>
         <td>${OrderList[i].UserId}</td>
         <td>${OrderList[i].MedicineName}</td>
         <td>${OrderList[i].MedicineCount}</td>
