@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Medicsl</title>
-    <link rel="stylesheet" href="./site.css">
+    <link rel="stylesheet" href="site.css">
 </head>
 
 <body>
@@ -22,15 +22,18 @@
                 <form id="signUpForm">
                     <legend>Sign Up</legend>
                     <label for="username">User Name:</label>
-                    <input type="text" id="username" name="username"> <span id="nameInvalid"></span>
+                    <input type="text" id="username" name="username" onfocusout="nameValidate()"> <span
+                        id="nameInvalid"></span>
                     <br><br>
 
                     <label for="number">User Phone Number</label>
-                    <input type="text" id="number" name="number" maxlength="10" placeholder="10-digit number"> <span
-                        class="error" id="numberInvalid"></span><br><br>
+                    <input type="text" id="number" name="number" maxlength="10" placeholder="10-digit number"
+                        onfocusout="numberValidate()">
+                    <span class="error" id="numberInvalid"></span><br><br>
 
                     <label for="email">Email</label>
-                    <input type="text" id="email" name="email"> <span id="emailInvalid"></span><br><br>
+                    <input type="text" id="email" name="email" onfocusout="emailValidate()">
+                    <span id="emailInvalid" class="error"></span><br><br>
 
                     <label for="pass">Password</label>
                     <input type="text" name="pass" id="pass"><br><br>
@@ -47,7 +50,9 @@
                 <br>
                 <br>
                 <form id="signInForm">
-                    <legend>Sign In</legend>
+                    <legend>
+                        <h2>Sign In</h2>
+                    </legend><br>
                     <label for="userID">Email</label>
                     <input type="text" name="userID" id="userID"> <br><br>
 
@@ -57,6 +62,7 @@
                     <input type="submit" value="login">
                     <button type="reset" id="cancelBtn">Cancel</button>
                 </form>
+                <span class="error" id="invalidLogin"></span>
             </div>
         </div>
     </div>
@@ -71,32 +77,38 @@
             <div onclick="orderHistory()">order History</div>
             <div onclick=""><a href="">logout</a></div>
         </nav>
-        <h1 id="greeting"></h1>
+        <h2 id="greeting" class="container"></h2>
     </div>
     <div id="medicineDetails" class="container">
-        <form class="card" id="editMedicineForm">
-            <label for="name">Medicine name</label>
-            <input type="text" name="name" id="name"><br><br>
-            <label for="editQuantity">quantity</label>
-            <input type="number" name="editQuantity" id="editQuantity"><br><br>
-            <label for="editPrice">Price</label>
-            <input type="number" name="editPrice" id="editPrice"><br><br>
-            <input type="submit" value="edit">
-            <input type="reset" value="cancel">
-        </form>
-
-        <table>
-            <thead>
-                <th>Medicine ID</th>
-                <th>Medicine name</th>
-                <th>quantity</th>
-                <th>Expiry</th>
-                <th>price</th>
-                <th>Action</th>
-            </thead>
-            <tbody id="medicine-table">
-            </tbody>
-        </table>
+        <span class="error" id="purchaseError"></span>
+        <div class="table">
+            <table>
+                <thead>
+                    <th>Medicine ID</th>
+                    <th>Medicine name</th>
+                    <th>quantity</th>
+                    <th>Expiry</th>
+                    <th>price</th>
+                    <th>Action</th>
+                </thead>
+                <tbody id="medicine-table">
+                </tbody>
+            </table>
+        </div>
+        <div class="medicine__form ">
+            <form id="editMedicineForm">
+                <label for="name">Medicine name</label>
+                <input type="text" name="name" id="name"><br><br>
+                <label for="editQuantity">quantity</label>
+                <input type="number" name="editQuantity" id="editQuantity"><br><br>
+                <label for="editPrice">Price</label>
+                <input type="number" name="editPrice" id="editPrice"><br><br>
+                <label for="expiryDate">Expiry</label>
+                <input type="date" name="expiryDate" id="expiryDate">
+                <input type="submit" value="edit">
+                <input type="reset" value="cancel">
+            </form>
+        </div>
     </div>
     <div id="quantity-container" class="container">
         <label for="quantity"></label>
@@ -113,6 +125,7 @@
                 <th>User ID</th>
                 <th>Medicine Name</th>
                 <th>quantity</th>
+                <th>Action</th>
             </thead>
             <tbody id="order-table">
             </tbody>
@@ -124,8 +137,9 @@
         <label for="balance">Enter the amount</label>
         <input type="number" id="balance" name="balance">
         <button onclick="Recharge()">Recharge</button>
+        <span id="balanceError" class="error"></span>
     </div>
-
+    
     <div id="showBalance" class="container">
         <h1>balance</h1><br><br>
         <p id="balance-message"></p>

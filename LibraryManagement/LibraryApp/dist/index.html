@@ -6,10 +6,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
     <link rel="stylesheet" href="site.css">
+
 </head>
 
 <body>
-
     <div class="wrapper" id="wrapper">
         <div class="card">
             <div id="signSwitch">
@@ -23,6 +23,16 @@
                     <legend>Sign Up</legend>
                     <label for="name">Name:</label>
                     <input type="text" id="name" name="name" required><br><br>
+                    <label for="male">Gender</label>
+                    <input type="radio" id="male" name="gender" value="Male">
+                    <label for="male" class="inside_lables">Male</label><br>
+                    <input type="radio" id="female" name="gender" value="Female">
+                    <label for="female" class="inside_lables">Female</label><br>
+                    <input type="radio" id="other" name="gender" value="Other">
+                    <label for="other" class="inside_lables">Other</label> <span class="error"
+                        id="genderInvalid"></span><br><br>
+                        <label for="department">Dept:</label>
+                        <input type="text" id="department" name="department" required><br><br>
                     <label for="phone">Phone:</label>
                     <input type="tel" id="phone" name="phone" required><br><br>
                     <label for="signUpEmail">Email:</label>
@@ -48,10 +58,10 @@
                     <input type="submit" value="login">
                     <button type="reset" id="cancelBtn">Cancel</button>
                 </form>
+                <span class="error" id="invalidLogin"></span>
             </div>
         </div>
     </div>
-
     <div id="homePage">
         <nav class="navbar">
             <div onclick="showBalance()">Balance Check</div>
@@ -62,7 +72,6 @@
         </nav>
         <h1 id="greeting" class="container"></h1>
     </div>
-
     <div id="updateBalance" class="container">
         <h1>Recharge</h1><br><br>
         <label for="balance">Enter the amount</label>
@@ -75,37 +84,6 @@
         <h1>balance</h1><br><br>
         <p id="balance-message"></p>
     </div>
-    <div id="travelHistory" class="container">
-        <table>
-            <thead>
-                
-                <th>travel ID</th>
-                <th>Card Number</th>
-                <th>From Location</th>
-                <th>To Location</th>
-                <th>Date</th>
-                <th>Travel Cost</th>
-            </thead>
-            <tbody id="travel-table">
-            </tbody>
-        </table>
-    </div>
-    <div id="ticketFair" class="container">
-        <span id="travelError" class="error">sdd</span>
-        <table>
-            <thead>
-                
-                <th>Ticket ID</th>
-                <th>From Location</th>
-                <th>To Location</th>
-                <th>Fair</th>
-                <th>Action</th>
-            </thead>
-            <tbody id="ticket-table">
-            </tbody>
-        </table>
-    </div>
-
     <script src="index.js"></script>
 </body>
 

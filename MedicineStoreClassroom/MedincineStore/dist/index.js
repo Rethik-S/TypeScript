@@ -1,4 +1,7 @@
 "use strict";
+// let UserIdAutoIncrement = 2001;
+// let MedicineIdAutoIncrement = 1005;
+// let OrderIdAutoIncrement = 3001;
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -8,16 +11,14 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-let UserIdAutoIncrement = 2001;
-// let MedicineIdAutoIncrement = 1005;
-let OrderIdAutoIncrement = 3001;
 let CurrentLoggedInuser;
 // let CurrentUserID: number;
 // let CurrentUserName: string;
 let editingId = null;
-// let NewUserNameStatus = false;
-// let NewUserAgeStatus = false;
-// let NewUserPhoneNumberStatus = false;
+let NewUserNameStatus = false;
+let NewUserAgeStatus = false;
+let NewUserPhoneNumberStatus = false;
+let NewUserEmailStatus = false;
 let currentMedicineID;
 const form = document.getElementById("signUpForm");
 const editForm = document.getElementById("editMedicineForm");
@@ -42,7 +43,65 @@ const orderElement = document.getElementById("order-container");
 const orderTableElement = document.getElementById("order-table");
 const updateBalanceElement = document.getElementById("updateBalance");
 const showBalanceElement = document.getElementById("showBalance");
+const nameInput = document.getElementById("name");
+const quantityInput = document.getElementById("editQuantity");
+const priceInput = document.getElementById("editPrice");
+const expiryDateInput = document.getElementById("expiryDate");
+// error elements
+const invalidLogin = document.getElementById("invalidLogin");
+const purchaseError = document.getElementById("purchaseError");
+const balanceError = document.getElementById("balanceError");
 //dob.split('T')[0].split('-').reverse().join('/')
+// validation
+function nameValidate() {
+    var name = document.getElementById("username").value;
+    var error = document.getElementById("nameInvalid");
+    var nameRegex = /[a-zA-Z]+/;
+    if (nameRegex.test(name)) {
+        error.innerHTML = "valid";
+        error.style.color = "green";
+        NewUserNameStatus = true;
+        return true;
+    }
+    else {
+        NewUserNameStatus = false;
+        error.innerHTML = "name Invalid";
+        error.style.color = "red";
+        return false;
+    }
+}
+function numberValidate() {
+    var number = document.getElementById("number").value.trim();
+    //phone number
+    var numRegex = /^[7-9][0-9]{9}$/;
+    var error = document.getElementById("numberInvalid");
+    if (numRegex.test(number)) {
+        error.innerHTML = "valid";
+        error.style.color = "green";
+    }
+    else {
+        error.innerHTML = "Enter valid number";
+        error.style.display = "block";
+        return number;
+    }
+    return false;
+}
+function emailValidate() {
+    var email = document.getElementById("email").value.trim();
+    //email
+    var emailRegex = /^([a-z 0-9\.-]+)@([a-z0-9-]+).([a-z]{2,8})(.[a-z]{2,8})/;
+    var emailError = document.getElementById("emailInvalid");
+    if (emailRegex.test(email)) {
+        emailError.innerHTML = "valid ";
+        emailError.style.color = "green";
+        emailError.style.display = "block";
+    }
+    else {
+        emailError.innerHTML = "Invalid email";
+        return email;
+    }
+    return false;
+}
 //sign up
 form.addEventListener("submit", (event) => {
     event.preventDefault();
@@ -53,7 +112,7 @@ form.addEventListener("submit", (event) => {
     const confirmPass = signUpConfirmPassword.value.trim();
     if (pass == confirmPass) {
         const user = {
-            userID: ++UserIdAutoIncrement,
+            userID: 0,
             name: name,
             email: email,
             phone: phone,
@@ -72,7 +131,7 @@ loginForm.addEventListener("submit", (event) => __awaiter(void 0, void 0, void 0
     const users = yield fetchUser();
     const userIndex = users.findIndex(u => u.email == email && u.password == pass);
     if (userIndex == -1) {
-        greeting.innerHTML = "Invalid User";
+        invalidLogin.innerHTML = "Please check email and password";
     }
     else {
         CurrentLoggedInuser = users[userIndex];
@@ -136,21 +195,34 @@ function buyMedicine(quantity) {
         const MedicineList = yield fetchMedicines();
         for (let i = 0; i < MedicineList.length; i++) {
             if (MedicineList[i].medicineID == currentMedicineID) {
-                MedicineList[i].medicineCount -= quantity;
-                let price = quantity * MedicineList[i].medicinePrice;
-                let order = {
-                    orderID: ++OrderIdAutoIncrement,
-                    medicineID: MedicineList[i].medicineID,
-                    userID: CurrentLoggedInuser.userID,
-                    medicineName: MedicineList[i].medicineName,
-                    medicineCount: quantity,
-                    orderStatus: "ordered"
-                };
-                addOrder(order);
-                //get amount
-                CurrentLoggedInuser.balance -= price;
-                updateUser(CurrentLoggedInuser.userID, CurrentLoggedInuser);
-                updateMedicine(MedicineList[i].medicineID, MedicineList[i]);
+                if (quantity > MedicineList[i].medicineCount) {
+                    purchaseError.style.display = "block";
+                    purchaseError.innerHTML = 'quantity is not present.';
+                }
+                else {
+                    let price = quantity * MedicineList[i].medicinePrice;
+                    if (CurrentLoggedInuser.balance >= price) {
+                        MedicineList[i].medicineCount -= quantity;
+                        let order = {
+                            orderID: 0,
+                            medicineID: MedicineList[i].medicineID,
+                            userID: CurrentLoggedInuser.userID,
+                            medicineName: MedicineList[i].medicineName,
+                            medicineCount: quantity,
+                            orderStatus: "ordered"
+                        };
+                        addOrder(order);
+                        //get amount
+                        CurrentLoggedInuser.balance -= price;
+                        updateUser(CurrentLoggedInuser.userID, CurrentLoggedInuser);
+                        updateMedicine(MedicineList[i].medicineID, MedicineList[i]);
+                        purchaseError.style.display = "none";
+                    }
+                    else {
+                        purchaseError.style.display = "block";
+                        purchaseError.innerHTML = 'Insufficient balance Please recharge.';
+                    }
+                }
                 break;
             }
         }
@@ -168,6 +240,7 @@ function orderHistory() {
             if (OrderList[i].userID == CurrentLoggedInuser.userID) {
                 let tableData = document.createElement("tr");
                 tableData.innerHTML = `
+        <td>${OrderList[i].orderID}</td>
         <td>${OrderList[i].medicineID}</td>
         <td>${OrderList[i].userID}</td>
         <td>${OrderList[i].medicineName}</td>
@@ -190,6 +263,7 @@ function showCancelOrder() {
                 let tableData = document.createElement("tr");
                 tableData.innerHTML = `
             <td>${OrderList[i].orderID}</td>
+            <td>${OrderList[i].medicineID}</td>
             <td>${OrderList[i].userID}</td>
             <td>${OrderList[i].medicineName}</td>
             <td>${OrderList[i].medicineCount}</td>
@@ -231,12 +305,17 @@ function DisplayRecharge() {
     updateBalanceElement.style.display = "block";
 }
 function Recharge() {
-    HideAll();
-    showBalanceElement.style.display = "block";
     let amount = parseInt(document.getElementById("balance").value);
-    CurrentLoggedInuser.balance += amount;
-    document.getElementById("balance-message").innerHTML = `your balance is ${CurrentLoggedInuser.balance}`;
-    updateUser(CurrentLoggedInuser.userID, CurrentLoggedInuser);
+    if (amount > 0) {
+        HideAll();
+        showBalanceElement.style.display = "block";
+        CurrentLoggedInuser.balance += amount;
+        document.getElementById("balance-message").innerHTML = `your balance is ${CurrentLoggedInuser.balance}`;
+        updateUser(CurrentLoggedInuser.userID, CurrentLoggedInuser);
+    }
+    else {
+        balanceError.innerHTML = 'Enter a valid amount';
+    }
 }
 function showBalance() {
     HideAll();
@@ -249,12 +328,15 @@ function HideAll() {
     orderElement.style.display = "none";
     updateBalanceElement.style.display = "none";
     showBalanceElement.style.display = "none";
+    purchaseError.style.display = "none";
+    // balanceError.style.display = "none";
 }
 function Edit(id) {
     return __awaiter(this, void 0, void 0, function* () {
         const nameInput = document.getElementById("name");
         const quantityInput = document.getElementById("editQuantity");
         const priceInput = document.getElementById("editPrice");
+        const expiryDate = expiryDateInput;
         editingId = id;
         const MedicineList = yield fetchMedicines();
         const item = MedicineList.find((item) => item.medicineID === id);
@@ -262,39 +344,39 @@ function Edit(id) {
             nameInput.value = item.medicineName;
             quantityInput.value = String(item.medicineCount);
             priceInput.value = String(item.medicinePrice);
+            const changeddate = new Date();
+            changeddate.setDate((new Date(item.medicineExpiry)).getDate());
+            expiryDate.valueAsDate = changeddate;
         }
     });
 }
+//edit
 editForm.addEventListener("submit", (event) => __awaiter(void 0, void 0, void 0, function* () {
     event.preventDefault();
-    const nameInput = document.getElementById("name");
-    const quantityInput = document.getElementById("editQuantity");
-    const priceInput = document.getElementById("editPrice");
     const name = nameInput.value.trim();
     const quantity = parseInt(quantityInput.value.trim());
     const price = parseInt(priceInput.value.trim());
-    const MedicineList = yield fetchMedicines();
-    const index = MedicineList.findIndex((item) => item.medicineID === editingId);
-    MedicineList[index] = Object.assign(Object.assign({}, MedicineList[index]), { medicineName: name, medicineCount: quantity, medicinePrice: price });
-    updateMedicine(MedicineList[index].medicineID, MedicineList[index]);
-    editingId = null;
+    const expiryDate = new Date(expiryDateInput.value).toISOString().substring(0, 10);
+    if (editingId !== null) {
+        const MedicineList = yield fetchMedicines();
+        const index = MedicineList.findIndex((item) => item.medicineID === editingId);
+        MedicineList[index] = Object.assign(Object.assign({}, MedicineList[index]), { medicineName: name, medicineCount: quantity, medicinePrice: price, medicineExpiry: expiryDate });
+        updateMedicine(MedicineList[index].medicineID, MedicineList[index]);
+        editingId = null;
+    }
+    else {
+        const medicine = {
+            medicineID: 0,
+            medicineName: name,
+            medicineCount: quantity,
+            medicinePrice: price,
+            medicineExpiry: expiryDate
+        };
+        addMedicine(medicine);
+    }
     editForm.reset();
     showMedicineDetails();
 }));
-// async function editElement() {
-//     const nameInput = document.getElementById("name") as HTMLInputElement;
-//     const quantityInput = document.getElementById("editQuantity") as HTMLInputElement;
-//     const priceInput = document.getElementById("editPrice") as HTMLInputElement;
-//     const name = nameInput.value.trim();
-//     const quantity = parseInt(quantityInput.value.trim());
-//     const price = parseInt(priceInput.value.trim());
-//     const MedicineList = await fetchMedicines();
-//     const index = MedicineList.findIndex((item) => item.medicineID === editingId);
-//     MedicineList[index] = { ...MedicineList[index], medicineName: name, medicineCount: quantity, medicinePrice: price };
-//     updateMedicine(MedicineList[index].medicineID, MedicineList[index])
-//     editingId = null;
-//     showMedicineDetails();
-// }
 //display functions
 function newUser() {
     signUpElement.style.display = "block";
@@ -357,6 +439,20 @@ function fetchMedicines() {
             throw new Error('Failed to fetch medicines');
         }
         return yield response.json();
+    });
+}
+function addMedicine(medicine) {
+    return __awaiter(this, void 0, void 0, function* () {
+        const response = yield fetch('http://localhost:5078/api/Medicine', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(medicine)
+        });
+        if (!response.ok) {
+            throw new Error('Failed to add medicine');
+        }
     });
 }
 function updateMedicine(id, medicine) {

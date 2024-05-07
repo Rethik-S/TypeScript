@@ -1,12 +1,11 @@
 using System;
 using System.Collections.Generic;
-using System.Data.Entity;
 using System.Linq;
 using System.Threading.Tasks;
-using MetroCardAPI.Data;
+using LibraryAPI.Data;
 using Microsoft.AspNetCore.Mvc;
 
-namespace MetroCardAPI.Controllers
+namespace LibraryAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
@@ -15,7 +14,7 @@ namespace MetroCardAPI.Controllers
         // private static List<Users> _Users = new List<Users>
         // {
         //     // Add more Users here if needed
-        //     new Users { CardNumber = "1", Name = "Ravi", PhoneNumber = "1234567890",Balance=0,Password="123" },
+        //     new Users { userID = "1", Name = "Ravi", PhoneNumber = "1234567890",Balance=0,Password="123" },
         // };
 
         private readonly ApplicationDBContext _dbContext;
@@ -32,10 +31,10 @@ namespace MetroCardAPI.Controllers
         }
 
         // GET: api/Users/1
-        [HttpGet("{cardNumber}")]
-        public IActionResult GetUser(int cardNumber)
+        [HttpGet("{userID}")]
+        public IActionResult GetUser(int userID)
         {
-            var user = _dbContext.users.FirstOrDefault(u => u.CardNumber == cardNumber);
+            var user = _dbContext.users.FirstOrDefault(u => u.UserID == userID);
             if (user == null)
             {
                 return NotFound();
@@ -56,20 +55,22 @@ namespace MetroCardAPI.Controllers
 
         // Updating an existing user
         // PUT: api/Users/1
-        [HttpPut("{cardNumber}")]
-        public IActionResult PutUser(int cardNumber, [FromBody] Users user)
+        [HttpPut("{userID}")]
+        public IActionResult PutUser(int userID, [FromBody] Users user)
         {
-            var userOld = _dbContext.users.FirstOrDefault(u => u.CardNumber == cardNumber);
+            var userOld = _dbContext.users.FirstOrDefault(u => u.UserID == userID);
             if (userOld == null)
             {
                 return NotFound();
             }
 
             userOld.Name = user.Name;
+            userOld.Email = user.Email;
+            userOld.Gender = user.Gender;
+            userOld.Department = user.Department;
             userOld.Password = user.Password;
             userOld.Balance = user.Balance;
-            userOld.PhoneNumber = user.PhoneNumber;
-            userOld.Email = user.Email;
+            userOld.Phone = user.Phone;
 
             _dbContext.SaveChanges();
             // You might want to return NoContent or another appropriate response
@@ -78,10 +79,10 @@ namespace MetroCardAPI.Controllers
 
         // Deleting an existing user
         // DELETE: api/Users/1
-        [HttpDelete("{cardNumber}")]
-        public IActionResult DeleteContact(int cardNumber)
+        [HttpDelete("{userID}")]
+        public IActionResult DeleteContact(int userID)
         {
-            var user = _dbContext.users.FirstOrDefault(u => u.CardNumber == cardNumber);
+            var user = _dbContext.users.FirstOrDefault(u => u.UserID == userID);
             if (user == null)
             {
                 return NotFound();
@@ -92,5 +93,4 @@ namespace MetroCardAPI.Controllers
             return Ok();
         }
     }
-
 }

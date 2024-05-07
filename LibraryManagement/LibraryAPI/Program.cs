@@ -1,7 +1,7 @@
-using MetroCardAPI.Controllers;
+using LibraryAPI.Controllers;
 using Microsoft.EntityFrameworkCore;
 
-using MetroCardAPI;
+using LibraryAPI;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -34,6 +34,6 @@ app.UseRouting();
 
 app.UseCors(policy => policy.AllowAnyHeader().AllowAnyMethod().AllowAnyOrigin());
 
-app.MapGet("/", () => "Metro card application");
+app.MapGet("/", () => "Library Management");
 
 app.Run();

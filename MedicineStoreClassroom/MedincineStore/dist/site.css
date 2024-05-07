@@ -89,7 +89,23 @@ button{
     margin-top: 5rem;
 }
 
-th,td{
-    min-width: 5rem;
+thead,th,td{
+    min-width: 7rem;
     text-align: center;
+}
+
+.error{
+    color: red;
+}
+/* .medicine__form{
+    margin: 0;
+} */
+.medicine_details{
+    display: flex;
+    flex-direction: row-reverse;
+    gap: 2rem;
+}
+
+.table{
+    width: fit-content;
 }
