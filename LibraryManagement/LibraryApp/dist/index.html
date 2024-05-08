@@ -20,19 +20,19 @@
 
             <div id="signUp">
                 <form id="signupform">
-                    <legend>Sign Up</legend>
+                    <legend>Sign Up</legend><br>
                     <label for="name">Name:</label>
                     <input type="text" id="name" name="name" required><br><br>
-                    <label for="male">Gender</label>
+                    <label for="male">Gender</label><br>
                     <input type="radio" id="male" name="gender" value="Male">
-                    <label for="male" class="inside_lables">Male</label><br>
+                    <label for="male" class="inside_lables">Male</label>
                     <input type="radio" id="female" name="gender" value="Female">
-                    <label for="female" class="inside_lables">Female</label><br>
+                    <label for="female" class="inside_lables">Female</label>
                     <input type="radio" id="other" name="gender" value="Other">
                     <label for="other" class="inside_lables">Other</label> <span class="error"
                         id="genderInvalid"></span><br><br>
-                        <label for="department">Dept:</label>
-                        <input type="text" id="department" name="department" required><br><br>
+                    <label for="department">Dept:</label>
+                    <input type="text" id="department" name="department" required><br><br>
                     <label for="phone">Phone:</label>
                     <input type="tel" id="phone" name="phone" required><br><br>
                     <label for="signUpEmail">Email:</label>
@@ -48,7 +48,7 @@
                 <br>
                 <br>
                 <form id="signInForm">
-                    <legend>Sign In</legend>
+                    <legend>Sign In</legend><br>
                     <label for="signInEmail">Email</label>
                     <input type="text" name="signInEmail" id="signInEmail"> <br><br>
 
@@ -64,10 +64,12 @@
     </div>
     <div id="homePage">
         <nav class="navbar">
+            <div onclick="showBookDetails()">show Book Details</div>
             <div onclick="showBalance()">Balance Check</div>
             <div onclick="DisplayRecharge()">Recharge</div>
-            <div onclick="travelHistory()">View Travel History</div>
-            <div onclick="Travel()">Travel</div>
+            <div onclick="borrowHistory()">borrow History</div>
+            <div onclick="purchase()">Book</div>
+            <div onclick="showReturnBook()">Return Book</div>
             <div onclick=""><a href="">logout</a></div>
         </nav>
         <h1 id="greeting" class="container"></h1>
@@ -83,6 +85,52 @@
     <div id="showBalance" class="container">
         <h1>balance</h1><br><br>
         <p id="balance-message"></p>
+    </div>
+    <div id="borrowHistory" class="container">
+        <table>
+            <thead>
+
+                <th>borrowID</th>
+                <th>bookID</th>
+                <th>userID</th>
+                <th>Borrowed Date</th>
+                <th>Book Count</th>
+                <th>Status</th>
+                <th>Paid Fine Amount</th>
+            </thead>
+            <tbody id="borrow-table">
+            </tbody>
+        </table>
+    </div>
+    <div id="bookDetails" class="container">
+        <span class="error" id="bookingError"></span>
+        <table>
+            <thead>
+
+                <th>bookID</th>
+                <th>bookname</th>
+                <th>author name</th>
+                <th>BookCount</th>
+            </thead>
+            <tbody id="book-table">
+            </tbody>
+        </table>
+        <form id="editBookForm">
+            <label for="bookname">bookname</label>
+            <input type="text" name="bookname" id="bookname"><br><br>
+            <label for="authorname">author name</label>
+            <input type="text" name="authorname" id="authorname"><br><br>
+            <label for="BookCount">Book Count</label>
+            <input type="number" name="BookCount" id="BookCount"><br><br>
+
+            <input type="submit" value="add">
+            <input type="reset" value="cancel">
+        </form>
+    </div>
+    <div id="quantity-container" class="container">
+        <label for="quantity"></label>
+        <input type="number" name="quantity" id="quantity">
+        <button onclick="setQuantity()">buy</button>
     </div>
     <script src="index.js"></script>
 </body>

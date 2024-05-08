@@ -23,7 +23,7 @@ interface TicketFairs {
 }
 
 
-let editingId: string | null = null;
+let editingId: number | null = null;
 let CurrentLoggedInuser: User;
 
 const form = document.getElementById("signupform") as HTMLFormElement;
@@ -45,10 +45,16 @@ const updateBalanceElement = document.getElementById("updateBalance") as HTMLDiv
 const showBalanceElement = document.getElementById("showBalance") as HTMLDivElement;
 const ticketFairElement = document.getElementById("ticketFair") as HTMLDivElement;
 const travelError = document.getElementById("travelError") as HTMLDivElement;
+const editForm = document.getElementById("editTicketForm") as HTMLFormElement;
+const fromLocation = document.getElementById("fromLocation") as HTMLFormElement;
+const toLocation = document.getElementById("toLocation") as HTMLFormElement;
+const fair = document.getElementById("fair") as HTMLFormElement;
 
 
 //error
 const balanceError = document.getElementById("balanceError") as HTMLSpanElement
+const invalidLogin = document.getElementById("invalidLogin") as HTMLSpanElement;
+
 
 //sign up
 form.addEventListener("submit", (event) => {
@@ -82,7 +88,7 @@ loginForm.addEventListener("submit", async (event) => {
     );
 
     if (userIndex == -1) {
-        greeting.innerHTML = "Invalid User";
+        invalidLogin.innerHTML = "Please check email and password";
     }
     else {
         CurrentLoggedInuser = users[userIndex];
@@ -119,6 +125,20 @@ async function addUser(user: User): Promise<void> {
     }
     // renderusers();
 }
+async function addTicket(ticket: TicketFairs): Promise<void> {
+    const response = await fetch('http://localhost:5075/api/TicketFairs', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(ticket)
+    });
+    if (!response.ok) {
+        throw new Error('Failed to add user');
+    }
+    // renderusers();
+    showTicketDetails();
+}
 
 async function fetchUser(): Promise<User[]> {
     const apiUrl = 'http://localhost:5075/api/Users';
@@ -140,6 +160,19 @@ async function updateUser(cardNumber: number, user: User): Promise<void> {
     if (!response.ok) {
         throw new Error('Failed to update user');
     }
+}
+async function updateTicket(ticketID: number, ticket: TicketFairs): Promise<void> {
+    const response = await fetch(`http://localhost:5075/api/TicketFairs/${ticketID}`, {
+        method: 'PUT',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(ticket)
+    });
+    if (!response.ok) {
+        throw new Error('Failed to update user');
+    }
+    showTicketDetails();
 }
 
 async function fetchTravelDetails(): Promise<TravelDetails[]> {
@@ -275,6 +308,30 @@ async function Travel() {
 
 }
 
+async function showTicketDetails() {
+    HideAll();
+
+    ticketFairElement.style.display = "block";
+
+    const travelFairsList = await fetchTicketFairs();
+
+    let tableElement = document.getElementById("ticket-table") as HTMLDivElement;
+    tableElement.innerHTML = "";
+    for (var i = 0; i < travelFairsList.length; i++) {
+
+        let tableData = document.createElement("tr");
+
+        tableData.innerHTML = `
+        <td>${travelFairsList[i].ticketID}</td>
+        <td>${travelFairsList[i].fromLocation}</td>
+        <td>${travelFairsList[i].toLocation}</td>
+        <td>${travelFairsList[i].fair}</td>
+        <td><button onclick="Edit(${travelFairsList[i].ticketID})">Edit</button></td>
+        <td><button onclick="deleteTicket(${travelFairsList[i].ticketID})">Delete</button></td>
+            `;
+        tableElement.appendChild(tableData);
+    }
+}
 async function Book(ticketID: number) {
     const travelFairsList = await fetchTicketFairs();
 
@@ -302,4 +359,56 @@ async function Book(ticketID: number) {
     }
 
 
+}
+
+async function deleteTicket(ticketID: string): Promise<void> {
+    const response = await fetch(`http://localhost:5075/api/TicketFairs/${ticketID}`, {
+        method: 'DELETE'
+    });
+    if (!response.ok) {
+        throw new Error('Failed to delete contact');
+    }
+    showTicketDetails();
+}
+
+editForm.addEventListener("submit", async (event) => {
+    event.preventDefault();
+    const fromlocation = fromLocation.value.trim();
+    const tolocation = toLocation.value.trim();
+    const price = parseInt(fair.value.trim());
+    if (editingId !== null) {
+        const ticketList = await fetchTicketFairs();
+        const index = ticketList.findIndex((item) => item.ticketID === editingId);
+
+        ticketList[index] = { ...ticketList[index], fromLocation: fromlocation, toLocation: tolocation, fair: price };
+        updateTicket(ticketList[index].ticketID, ticketList[index])
+
+        editingId = null;
+    } else {
+        const ticket: TicketFairs = {
+            ticketID: 0,
+            fromLocation: fromlocation,
+            toLocation: tolocation,
+            fair: price
+        };
+
+        addTicket(ticket);
+    }
+
+    editForm.reset();
+
+});
+
+async function Edit(id: number) {
+
+
+    editingId = id;
+    const ticketList = await fetchTicketFairs();
+    const item = ticketList.find((item) => item.ticketID === id);
+    if (item) {
+        fromLocation.value = item.fromLocation;
+        toLocation.value = item.toLocation;
+        fair.value = item.fair;
+
+    }
 }

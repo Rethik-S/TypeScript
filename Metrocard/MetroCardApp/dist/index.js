@@ -29,8 +29,13 @@ const updateBalanceElement = document.getElementById("updateBalance");
 const showBalanceElement = document.getElementById("showBalance");
 const ticketFairElement = document.getElementById("ticketFair");
 const travelError = document.getElementById("travelError");
+const editForm = document.getElementById("editTicketForm");
+const fromLocation = document.getElementById("fromLocation");
+const toLocation = document.getElementById("toLocation");
+const fair = document.getElementById("fair");
 //error
 const balanceError = document.getElementById("balanceError");
+const invalidLogin = document.getElementById("invalidLogin");
 //sign up
 form.addEventListener("submit", (event) => {
     event.preventDefault();
@@ -60,7 +65,7 @@ loginForm.addEventListener("submit", (event) => __awaiter(void 0, void 0, void 0
     const users = yield fetchUser();
     const userIndex = users.findIndex(u => u.email == email && u.password == pass);
     if (userIndex == -1) {
-        greeting.innerHTML = "Invalid User";
+        invalidLogin.innerHTML = "Please check email and password";
     }
     else {
         CurrentLoggedInuser = users[userIndex];
@@ -92,6 +97,22 @@ function addUser(user) {
         // renderusers();
     });
 }
+function addTicket(ticket) {
+    return __awaiter(this, void 0, void 0, function* () {
+        const response = yield fetch('http://localhost:5075/api/TicketFairs', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(ticket)
+        });
+        if (!response.ok) {
+            throw new Error('Failed to add user');
+        }
+        // renderusers();
+        showTicketDetails();
+    });
+}
 function fetchUser() {
     return __awaiter(this, void 0, void 0, function* () {
         const apiUrl = 'http://localhost:5075/api/Users';
@@ -114,6 +135,21 @@ function updateUser(cardNumber, user) {
         if (!response.ok) {
             throw new Error('Failed to update user');
         }
+    });
+}
+function updateTicket(ticketID, ticket) {
+    return __awaiter(this, void 0, void 0, function* () {
+        const response = yield fetch(`http://localhost:5075/api/TicketFairs/${ticketID}`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(ticket)
+        });
+        if (!response.ok) {
+            throw new Error('Failed to update user');
+        }
+        showTicketDetails();
     });
 }
 function fetchTravelDetails() {
@@ -230,6 +266,27 @@ function Travel() {
         }
     });
 }
+function showTicketDetails() {
+    return __awaiter(this, void 0, void 0, function* () {
+        HideAll();
+        ticketFairElement.style.display = "block";
+        const travelFairsList = yield fetchTicketFairs();
+        let tableElement = document.getElementById("ticket-table");
+        tableElement.innerHTML = "";
+        for (var i = 0; i < travelFairsList.length; i++) {
+            let tableData = document.createElement("tr");
+            tableData.innerHTML = `
+        <td>${travelFairsList[i].ticketID}</td>
+        <td>${travelFairsList[i].fromLocation}</td>
+        <td>${travelFairsList[i].toLocation}</td>
+        <td>${travelFairsList[i].fair}</td>
+        <td><button onclick="Edit(${travelFairsList[i].ticketID})">Edit</button></td>
+        <td><button onclick="deleteTicket(${travelFairsList[i].ticketID})">Delete</button></td>
+            `;
+            tableElement.appendChild(tableData);
+        }
+    });
+}
 function Book(ticketID) {
     return __awaiter(this, void 0, void 0, function* () {
         const travelFairsList = yield fetchTicketFairs();
@@ -252,6 +309,52 @@ function Book(ticketID) {
         else {
             travelError.style.display = "block";
             travelError.innerHTML = 'Insufficient Balance Please Recharge.';
+        }
+    });
+}
+function deleteTicket(ticketID) {
+    return __awaiter(this, void 0, void 0, function* () {
+        const response = yield fetch(`http://localhost:5075/api/TicketFairs/${ticketID}`, {
+            method: 'DELETE'
+        });
+        if (!response.ok) {
+            throw new Error('Failed to delete contact');
+        }
+        showTicketDetails();
+    });
+}
+editForm.addEventListener("submit", (event) => __awaiter(void 0, void 0, void 0, function* () {
+    event.preventDefault();
+    const fromlocation = fromLocation.value.trim();
+    const tolocation = toLocation.value.trim();
+    const price = parseInt(fair.value.trim());
+    if (editingId !== null) {
+        const ticketList = yield fetchTicketFairs();
+        const index = ticketList.findIndex((item) => item.ticketID === editingId);
+        ticketList[index] = Object.assign(Object.assign({}, ticketList[index]), { fromLocation: fromlocation, toLocation: tolocation, fair: price });
+        updateTicket(ticketList[index].ticketID, ticketList[index]);
+        editingId = null;
+    }
+    else {
+        const ticket = {
+            ticketID: 0,
+            fromLocation: fromlocation,
+            toLocation: tolocation,
+            fair: price
+        };
+        addTicket(ticket);
+    }
+    editForm.reset();
+}));
+function Edit(id) {
+    return __awaiter(this, void 0, void 0, function* () {
+        editingId = id;
+        const ticketList = yield fetchTicketFairs();
+        const item = ticketList.find((item) => item.ticketID === id);
+        if (item) {
+            fromLocation.value = item.fromLocation;
+            toLocation.value = item.toLocation;
+            fair.value = item.fair;
         }
     });
 }

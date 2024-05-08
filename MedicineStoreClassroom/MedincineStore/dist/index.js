@@ -259,7 +259,7 @@ function showCancelOrder() {
         let OrderList = yield fetchOrders();
         orderTableElement.innerHTML = "";
         for (var i = 0; i < OrderList.length; i++) {
-            if (OrderList[i].userID == CurrentLoggedInuser.userID) {
+            if (OrderList[i].userID == CurrentLoggedInuser.userID && OrderList[i].orderStatus == "ordered") {
                 let tableData = document.createElement("tr");
                 tableData.innerHTML = `
             <td>${OrderList[i].orderID}</td>
