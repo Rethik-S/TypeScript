@@ -13,6 +13,7 @@ public class Users
     public string Phone { get; set; }
     public string Password { get; set; }
     public double Balance { get; set; }
+    public byte[] UserImage { get; set; }
 
 
 }

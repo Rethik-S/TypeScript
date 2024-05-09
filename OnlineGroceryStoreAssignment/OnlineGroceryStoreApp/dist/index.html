@@ -4,16 +4,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Medicsl</title>
+    <title>Grocery Store</title>
     <link rel="stylesheet" href="site.css">
 </head>
 
 <body>
-
     <div class="wrapper" id="wrapper">
         <div class="card">
             <div id="signSwitch">
-                <h1>Medical store</h1><br>
+                <h1>Grocery store</h1><br>
                 <button onclick="newUser()">signUp</button>
                 <button onclick="existingUser()">SignIn</button><br><br>
             </div>
@@ -22,20 +21,18 @@
                 <form id="signUpForm">
                     <legend>Sign Up</legend>
                     <label for="userImage">profile image:</label>
-                    <input type="file" id="userImage" name="userImage" onfocusout=""> 
+                    <input type="file" id="userImage" name="userImage" required> <br><br>
 
                     <label for="username">User Name:</label>
-                    <input type="text" id="username" name="username" onfocusout="nameValidate()"> <span
-                        id="nameInvalid"></span>
+                    <input type="text" id="username" name="username"> <span id="nameInvalid"></span>
                     <br><br>
 
                     <label for="number">User Phone Number</label>
-                    <input type="text" id="number" name="number" maxlength="10" placeholder="10-digit number"
-                        onfocusout="numberValidate()">
+                    <input type="text" id="number" name="number" maxlength="10" placeholder="10-digit number">
                     <span class="error" id="numberInvalid"></span><br><br>
 
                     <label for="email">Email</label>
-                    <input type="text" id="email" name="email" onfocusout="emailValidate()">
+                    <input type="text" id="email" name="email">
                     <span id="emailInvalid" class="error"></span><br><br>
 
                     <label for="pass">Password</label>
@@ -72,74 +69,84 @@
 
     <div id="homePage">
         <nav class="navbar">
-            <div class="profileStyle" ><img id="profile" class="profile"><span id="profileName"></span></div>
-            <div onclick="showMedicineDetails()">medicine details</div>
-            <div onclick="purchase()">purchase</div>
-            <div onclick="showCancelOrder()">cancel</div>
-            <div onclick="DisplayRecharge()">Topup</div>
+            <div class="profileStyle"><img id="profile" class="profile"><span id="profileName"></span></div>
+            <div onclick="">Home</div>
+            <div onclick="showProductDetails()">Products</div>
+            <div onclick="showCart()">Cart</div>
+            <div onclick="purchase()">Purchase</div>
             <div onclick="showBalance()">showBalance</div>
+            <div onclick="DisplayRecharge()">Recharge</div>
             <div onclick="orderHistory()">order History</div>
             <div onclick=""><a href="">logout</a></div>
         </nav>
         <h2 id="greeting" class="container"></h2>
     </div>
-    <div id="medicineDetails" class="container">
-        <span class="error" id="purchaseError"></span>
+
+    <div id="productDetails" class="container">
+        <div class="product__form ">
+            <form id="editProductForm" class="card">
+                <div><label for="productImage">Product Image</label>
+                    <input type="file" name="productImage" id="productImage" required><br><br>
+                    <label for="name">Product name</label>
+                    <input type="text" name="name" id="name"><br><br>
+                    <label for="editQuantity">quantity</label>
+                    <input type="number" name="editQuantity" id="editQuantity"><br><br>
+                </div>
+                <div>
+                    <label for="editPrice">Price</label>
+                    <input type="number" name="editPrice" id="editPrice"><br><br>
+                    <label for="purchaseDate">Purchase Date</label>
+                    <input type="date" name="purchaseDate" id="purchaseDate"><br><br>
+                    <label for="expiryDate">Expiry Date</label>
+                    <input type="date" name="expiryDate" id="expiryDate"><br><br>
+                </div>
+                <div> <input type="submit" value="add">
+                    <input type="reset" value="cancel">
+                </div>
+            </form>
+        </div>
         <div class="table">
             <table>
                 <thead>
-                    <th>Medicine ID</th>
-                    <th>Medicine name</th>
+                    <th>Product Image</th>
+                    <th>Product ID</th>
+                    <th>Product name</th>
                     <th>quantity</th>
-                    <th>Expiry</th>
+                    <th>Purchase Date</th>
+                    <th>Expiry Date</th>
                     <th>price</th>
-                    <th>Action</th>
                 </thead>
-                <tbody id="medicine-table">
+                <tbody id="product__table">
                 </tbody>
             </table>
         </div>
-        <div class="medicine__form ">
-            <form id="editMedicineForm" class="card">
-                <label for="medicineImage">Medicine Image</label>
-                <input type="file" name="medicineImage" id="medicineImage" ><br><br>
-                <label for="name">Medicine name</label>
-                <input type="text" name="name" id="name"><br><br>
-                <label for="editQuantity">quantity</label>
-                <input type="number" name="editQuantity" id="editQuantity"><br><br>
-                <label for="editPrice">Price</label>
-                <input type="number" name="editPrice" id="editPrice"><br><br>
-                <label for="expiryDate">Expiry</label>
-                <input type="date" name="expiryDate" id="expiryDate"><br><br>
-                <input type="submit" value="add">
-                <input type="reset" value="cancel">
-            </form>
-        </div>
-    </div>
-    <div id="quantity-container" class="container">
-        <label for="quantity"></label>
-        <input type="number" name="quantity" id="quantity">
-        <button onclick="setQuantity()">buy</button>
-    </div>
 
-    <div id="order-container" class="container">
-        <div id="download"></div>
-        <button onclick="get()">Download csv</button>
+    </div>
+    
+    <div id="purchase" class="purchase__container container"></div>
+    
+    <div id="cart__container" class="container">
+        <span class="error" id="purchaseError"></span>
+        <button onclick="Buy()">BUY</button>
+        <!-- <div id="download"></div> -->
+        <!-- <button onclick="get()">Download csv</button> -->
         <table>
             <thead>
 
-                <th>Order ID</th>
-                <th>Medicine ID</th>
-                <th>User ID</th>
-                <th>Medicine Name</th>
+                <th></th>
+                <th>Product name</th>
                 <th>quantity</th>
-                <th>Action</th>
+                <th>Price</th>
             </thead>
-            <tbody id="order-table">
+            <tbody id="cart__table">
             </tbody>
         </table>
     </div>
-
+    <div id="orderHistory">
+        <table>
+            
+        </table>
+    </div>
     <div id="updateBalance" class="container">
         <h1>Recharge</h1><br><br>
         <label for="balance">Enter the amount</label>
@@ -147,14 +154,13 @@
         <button onclick="Recharge()">Recharge</button>
         <span id="balanceError" class="error"></span>
     </div>
-    
+
     <div id="showBalance" class="container">
         <h1>balance</h1><br><br>
         <p id="balance-message"></p>
     </div>
-
+    
     <script src="index.js"></script>
-
 </body>
 
 </html>

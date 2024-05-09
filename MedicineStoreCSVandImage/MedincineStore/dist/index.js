@@ -4,6 +4,7 @@
 // let OrderIdAutoIncrement = 3001;
 let CurrentLoggedInuser;
 let base64String;
+let userImagebase64String;
 // let CurrentUserID: number;
 // let CurrentUserName: string;
 let editingId = null;
@@ -28,6 +29,7 @@ const signSwitchElement = document.getElementById("signSwitch");
 const wrapperElement = document.getElementById("wrapper");
 const homePage = document.getElementById("homePage");
 const greeting = document.getElementById("greeting");
+const profileName = document.getElementById("profileName");
 const medicineElement = document.getElementById("medicineDetails");
 const medicineTableElement = document.getElementById("medicine-table");
 const quantityElement = document.getElementById("quantity-container");
@@ -39,6 +41,9 @@ const nameInput = document.getElementById("name");
 const quantityInput = document.getElementById("editQuantity");
 const priceInput = document.getElementById("editPrice");
 const expiryDateInput = document.getElementById("expiryDate");
+const medicineImageElement = document.getElementById("medicineImage");
+const userImageElement = document.getElementById("userImage");
+const profile = document.getElementById("profile");
 // error elements
 const invalidLogin = document.getElementById("invalidLogin");
 const purchaseError = document.getElementById("purchaseError");
@@ -102,6 +107,8 @@ form.addEventListener("submit", (event) => {
     const phone = signUpNumber.value.trim();
     const pass = signUpPassword.value.trim();
     const confirmPass = signUpConfirmPassword.value.trim();
+    // const userImage =
+    // userImageElement.value;
     if (pass == confirmPass) {
         const user = {
             userID: 0,
@@ -110,6 +117,7 @@ form.addEventListener("submit", (event) => {
             phone: phone,
             password: pass,
             balance: 0,
+            userImage: userImagebase64String
         };
         addUser(user);
     }
@@ -129,6 +137,8 @@ loginForm.addEventListener("submit", async (event) => {
         CurrentLoggedInuser = users[userIndex];
         homepage();
         greeting.innerHTML = `Welcome ${users[userIndex].name}`;
+        profile.src = `data:image/jpg;base64, ${users[userIndex].userImage}`;
+        profileName.innerHTML = `${users[userIndex].name}`;
     }
     form.reset();
 });
@@ -319,7 +329,7 @@ async function Edit(id) {
     const quantityInput = document.getElementById("editQuantity");
     const priceInput = document.getElementById("editPrice");
     const expiryDate = expiryDateInput;
-    const baseImage = medicineImage.value;
+    // const baseImage = medicineImage.value;
     editingId = id;
     const MedicineList = await fetchMedicines();
     const item = MedicineList.find((item) => item.medicineID === id);
@@ -330,6 +340,7 @@ async function Edit(id) {
         const changeddate = new Date();
         changeddate.setDate((new Date(item.medicineExpiry)).getDate());
         expiryDate.valueAsDate = changeddate;
+        // medicineImage.value=item.medicineImage
     }
 }
 medicineImage.addEventListener("input", (event) => {
@@ -338,6 +349,15 @@ medicineImage.addEventListener("input", (event) => {
     reader.onload = () => {
         base64String = reader.result;
         base64String = base64String === null || base64String === void 0 ? void 0 : base64String.toString().split(',')[1];
+    };
+    reader.readAsDataURL(file);
+});
+userImageElement.addEventListener("input", (event) => {
+    let file = event.target.files[0];
+    let reader = new FileReader();
+    reader.onload = () => {
+        userImagebase64String = reader.result;
+        userImagebase64String = userImagebase64String === null || userImagebase64String === void 0 ? void 0 : userImagebase64String.toString().split(',')[1];
     };
     reader.readAsDataURL(file);
 });
@@ -366,7 +386,7 @@ editForm.addEventListener("submit", async (event) => {
     if (editingId !== null) {
         const MedicineList = await fetchMedicines();
         const index = MedicineList.findIndex((item) => item.medicineID === editingId);
-        MedicineList[index] = Object.assign(Object.assign({}, MedicineList[index]), { medicineName: name, medicineCount: quantity, medicinePrice: price, medicineExpiry: expiryDate });
+        MedicineList[index] = Object.assign(Object.assign({}, MedicineList[index]), { medicineName: name, medicineCount: quantity, medicinePrice: price, medicineExpiry: expiryDate, medicineImage: base64String });
         updateMedicine(MedicineList[index].medicineID, MedicineList[index]);
         editingId = null;
     }

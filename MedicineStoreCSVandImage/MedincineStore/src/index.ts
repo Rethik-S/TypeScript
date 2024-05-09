@@ -4,6 +4,7 @@
 
 let CurrentLoggedInuser: User;
 let base64String: any;
+let userImagebase64String: any;
 
 // let CurrentUserID: number;
 // let CurrentUserName: string;
@@ -23,6 +24,7 @@ interface User {
     phone: string;
     password: string;
     balance: number;
+    userImage: any;
 }
 
 interface Medicine {
@@ -59,6 +61,7 @@ const signSwitchElement = document.getElementById("signSwitch") as HTMLDivElemen
 const wrapperElement = document.getElementById("wrapper") as HTMLDivElement;
 const homePage = document.getElementById("homePage") as HTMLDivElement;
 const greeting = document.getElementById("greeting") as HTMLHeadingElement;
+const profileName = document.getElementById("profileName") as HTMLHeadingElement;
 const medicineElement = document.getElementById("medicineDetails") as HTMLDivElement;
 const medicineTableElement = document.getElementById("medicine-table") as HTMLDivElement;
 const quantityElement = document.getElementById("quantity-container") as HTMLDivElement;
@@ -70,6 +73,9 @@ const nameInput = document.getElementById("name") as HTMLInputElement;
 const quantityInput = document.getElementById("editQuantity") as HTMLInputElement;
 const priceInput = document.getElementById("editPrice") as HTMLInputElement;
 const expiryDateInput = document.getElementById("expiryDate") as HTMLInputElement;
+const medicineImageElement = document.getElementById("medicineImage") as HTMLInputElement;
+const userImageElement = document.getElementById("userImage") as HTMLInputElement;
+const profile = document.getElementById("profile") as HTMLImageElement;
 
 // error elements
 const invalidLogin = document.getElementById("invalidLogin") as HTMLSpanElement;
@@ -146,7 +152,8 @@ form.addEventListener("submit", (event) => {
     const phone = signUpNumber.value.trim();
     const pass = signUpPassword.value.trim();
     const confirmPass = signUpConfirmPassword.value.trim();
-
+    // const userImage =
+    // userImageElement.value;
     if (pass == confirmPass) {
         const user: User = {
             userID: 0,
@@ -155,6 +162,7 @@ form.addEventListener("submit", (event) => {
             phone: phone,
             password: pass,
             balance: 0,
+            userImage: userImagebase64String
         };
         addUser(user);
     }
@@ -177,6 +185,8 @@ loginForm.addEventListener("submit", async (event) => {
         CurrentLoggedInuser = users[userIndex];
         homepage();
         greeting.innerHTML = `Welcome ${users[userIndex].name}`;
+        profile.src=`data:image/jpg;base64, ${users[userIndex].userImage}`;
+        profileName.innerHTML = `${users[userIndex].name}`;
 
     }
 
@@ -447,7 +457,7 @@ async function Edit(id: number) {
     const quantityInput = document.getElementById("editQuantity") as HTMLInputElement;
     const priceInput = document.getElementById("editPrice") as HTMLInputElement;
     const expiryDate = expiryDateInput;
-    const baseImage = medicineImage.value;
+    // const baseImage = medicineImage.value;
     editingId = id;
     const MedicineList = await fetchMedicines();
     const item = MedicineList.find((item) => item.medicineID === id);
@@ -458,6 +468,7 @@ async function Edit(id: number) {
         const changeddate = new Date();
         changeddate.setDate((new Date(item.medicineExpiry)).getDate())
         expiryDate.valueAsDate = changeddate;
+        // medicineImage.value=item.medicineImage
     }
 
 
@@ -474,6 +485,18 @@ medicineImage.addEventListener("input", (event: any) => {
     };
     reader.readAsDataURL(file);
 });
+
+userImageElement.addEventListener("input", (event: any) => {
+    let file = event.target.files[0];
+    let reader = new FileReader();
+
+    reader.onload = () => {
+        userImagebase64String = reader.result;
+        userImagebase64String = userImagebase64String?.toString().split(',')[1];
+    };
+    reader.readAsDataURL(file);
+});
+
 // medicineImage.onchange = function(event){
 //     const file = event.target.files[0];
 //     const reader = new FileReader();
@@ -503,7 +526,7 @@ editForm.addEventListener("submit", async (event) => {
         const MedicineList = await fetchMedicines();
         const index = MedicineList.findIndex((item) => item.medicineID === editingId);
 
-        MedicineList[index] = { ...MedicineList[index], medicineName: name, medicineCount: quantity, medicinePrice: price, medicineExpiry: expiryDate };
+        MedicineList[index] = { ...MedicineList[index], medicineName: name, medicineCount: quantity, medicinePrice: price, medicineExpiry: expiryDate, medicineImage: base64String };
         updateMedicine(MedicineList[index].medicineID, MedicineList[index])
 
         editingId = null;
@@ -554,6 +577,7 @@ async function fetchUser(): Promise<User[]> {
     }
     return await response.json();
 }
+
 
 async function addUser(user: User): Promise<void> {
     const response = await fetch('http://localhost:5078/api/Users', {
