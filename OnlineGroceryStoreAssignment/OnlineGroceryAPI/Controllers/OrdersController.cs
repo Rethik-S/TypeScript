@@ -45,7 +45,7 @@ namespace OnlineGroceryAPI.Controllers
             _dbContext.orders.Add(order);
             _dbContext.SaveChanges();
             // you might want to return CreatedAtAction or another appropriate response
-            return Ok();
+            return Ok(order);
         }
 
         //Updating an existing order

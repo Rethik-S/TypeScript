@@ -90,10 +90,11 @@ thead,th,td{
 
 .table{
     width: fit-content;
+    margin: 2rem auto;
 }
 
 img{
-    max-width: 400px;
+    max-width: 300px;
 }
 .profile{
     width: 1.8rem;
@@ -149,4 +150,19 @@ img{
 
 #orderHistory{
     display: none;
+    text-align: center;
+}
+
+.orderCard{
+    background-color: white;
+    border-radius: 1rem;
+    padding: 2rem;
+    min-width: 50vw;
+    max-width: 60vw;
+    border: 1px solid rgba(33, 33, 33, 0.216);
+    margin: 2rem auto;
+}
+.orderCard > div{
+    display: flex;
+    justify-content: space-between;
 }

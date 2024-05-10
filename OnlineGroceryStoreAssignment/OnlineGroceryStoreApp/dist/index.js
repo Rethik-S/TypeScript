@@ -140,6 +140,9 @@ loginForm.addEventListener("submit", async (event) => {
         CurrentLoggedInuser = users[userIndex];
         homepage();
         greeting.innerHTML = `Welcome ${users[userIndex].name}`;
+        setTimeout(() => {
+            greeting.style.display = "none";
+        }, 5000);
         profile.src = `data:image/jpg;base64, ${users[userIndex].userImage}`;
         profileName.innerHTML = `${users[userIndex].name}`;
     }
@@ -215,7 +218,7 @@ async function setGlobal(id) {
 function setQuantity() {
     let quantity = parseInt(document.getElementById("quantity").value);
     AddToCart(quantity);
-    const quantityElement = document.getElementById("quantity-container");
+    const quantityElement = document.getElementById(`quantity-container${currentProduct.productID}`);
     const productAddButton = document.getElementById("productAddButton");
     productAddButton.style.display = "block";
     quantityElement.style.display = "none";
@@ -303,101 +306,118 @@ function deleteItem(id) {
 }
 async function Buy() {
     let flag = true;
-    const Order = {
-        orderID: 0,
-        userID: CurrentLoggedInuser.userID,
-        orderStatus: "Initiated",
-        orderDate: new Date().toISOString().substring(0, 10),
-        totalPrice: 0
-    };
-    addOrder(Order);
-    const ordersList = await fetchOrders();
-    const orderIndex = ordersList.findIndex((o) => o.orderStatus == "Initiated");
-    const OrderWithID = ordersList[orderIndex];
+    // setTimeout(() => {
+    // }, 4000);
+    // const ordersList = await fetchOrders();
+    // const orderIndex = ordersList.findIndex((o) => o.orderStatus == "Initiated")
+    // const OrderWithID = ordersList[orderIndex];
     let totalPrice = 0;
     const productsList = await fetchProducts();
-    localCartItemsList.forEach((item) => {
-        item.itemID = 0;
-        totalPrice += item.priceOfItems;
-        item.orderID = OrderWithID.orderID;
-        productsList.forEach((product) => {
-            if (product.productID == item.productID) {
-                if (item.purchaseCount > product.quantityAvailable) {
-                    purchaseError.style.display = "block";
-                    purchaseError.innerHTML = 'quantity is not present.';
-                    OrderWithID.orderStatus = "Cancelled";
-                    updateOrder(OrderWithID.orderID, OrderWithID);
-                    flag = false;
-                    return;
-                }
-                else {
-                    product.quantityAvailable -= item.purchaseCount;
-                }
-            }
-        });
-    });
-    if (flag == true) {
-        if (totalPrice > CurrentLoggedInuser.balance) {
-            purchaseError.style.display = "block";
-            purchaseError.innerHTML = 'Insufficient balance Please recharge.';
-            deleteOrder(OrderWithID.orderID);
-            // OrderWithID.orderStatus = "Cancelled";
-            // updateOrder(OrderWithID.orderID, OrderWithID);
-        }
-        else {
-            OrderWithID.orderStatus = "Ordered";
-            OrderWithID.totalPrice = totalPrice;
-            CurrentLoggedInuser.balance -= totalPrice;
-            updateUser(CurrentLoggedInuser.userID, CurrentLoggedInuser);
-            updateOrder(OrderWithID.orderID, OrderWithID);
-            productsList.forEach((p) => {
-                updateProduct(p.productID, p);
-            });
-            localCartItemsList.forEach((i) => {
-                addItem(i);
-            });
-            purchaseError.style.display = "none";
-            localCartItemsList = new Array;
-        }
+    localCartItemsList.forEach((item) => { totalPrice += item.priceOfItems; });
+    if (totalPrice > CurrentLoggedInuser.balance) {
+        purchaseError.style.display = "block";
+        purchaseError.innerHTML = 'Insufficient balance Please recharge.';
+        flag = false;
     }
+    else {
+        localCartItemsList.forEach((item) => {
+            productsList.forEach((product) => {
+                if (product.productID == item.productID) {
+                    if (item.purchaseCount > product.quantityAvailable) {
+                        purchaseError.style.display = "block";
+                        purchaseError.innerHTML = 'quantity is not present.';
+                        flag = false;
+                        return;
+                    }
+                    else {
+                        product.quantityAvailable -= item.purchaseCount;
+                    }
+                }
+            });
+        });
+    }
+    if (flag) {
+        const Order = {
+            orderID: 0,
+            userID: CurrentLoggedInuser.userID,
+            orderStatus: "Ordered",
+            orderDate: new Date().toISOString().substring(0, 10),
+            totalPrice: 0
+        };
+        const OrderWithID = await addOrder(Order);
+        localCartItemsList.forEach((item) => { item.orderID = OrderWithID.orderID; item.itemID = 0; });
+        OrderWithID.totalPrice = totalPrice;
+        CurrentLoggedInuser.balance -= totalPrice;
+        setTimeout(() => {
+        }, 100);
+        updateUser(CurrentLoggedInuser.userID, CurrentLoggedInuser);
+        setTimeout(() => {
+        }, 100);
+        updateOrder(OrderWithID.orderID, OrderWithID);
+        setTimeout(() => {
+        }, 100);
+        productsList.forEach((p) => {
+            updateProduct(p.productID, p);
+            setTimeout(() => {
+            }, 100);
+        });
+        localCartItemsList.forEach((i) => {
+            addItem(i);
+            setTimeout(() => {
+            }, 100);
+        });
+        purchaseError.style.display = "none";
+        localCartItemsList = new Array;
+    }
+    showCart();
 }
 async function orderHistory() {
     HideAll();
     orderHistoryElement.style.display = "block";
     const ordersList = await fetchOrders();
     const itemsList = await fetchItems();
-    orderHistoryElement.innerHTML = '';
-    let buttondata = document.createElement('div');
-    buttondata.innerHTML = '';
+    orderHistoryElement.innerHTML = '<h2>Your Orders</h2>';
     const productsList = await fetchProducts();
     ordersList.forEach((order) => {
-        let tableData = document.createElement("table");
-        let flag = true;
-        tableData.innerHTML = `<thead>
+        if (order.orderStatus == "Ordered") {
+            const orderCard = document.createElement('div');
+            orderCard.innerHTML = '';
+            orderCard.className = "orderCard";
+            const heading = document.createElement('div');
+            heading.innerHTML = '';
+            heading.innerHTML = `<p>Name: ${CurrentLoggedInuser.name}</p> <p>Price: ${order.totalPrice}</p> <p>Date:${order.orderDate.split('T')[0].split('-').reverse().join('/')}</p>`;
+            orderCard.appendChild(heading);
+            let buttondata = document.createElement('div');
+            buttondata.innerHTML = '';
+            let tableData = document.createElement("table");
+            // let flag = true;
+            tableData.innerHTML = `<thead>
         <th>Product name</th>
         <th>Price</th>
         <th>quantity</th>
         <th></th>
     </thead>
     <tbody id="order__table">`;
-        itemsList.forEach((item) => {
-            if (item.orderID == order.orderID) {
-                const index = productsList.findIndex((p) => p.productID == item.productID);
-                const product = productsList[index];
-                tableData.innerHTML += `
+            itemsList.forEach((item) => {
+                if (item.orderID == order.orderID) {
+                    const index = productsList.findIndex((p) => p.productID == item.productID);
+                    const product = productsList[index];
+                    tableData.innerHTML += `
             <td>${product.productName}</td>
         <td>${item.priceOfItems}</td>
         <td>${item.purchaseCount}</td>
             `;
-                if (flag) {
+                    // if (flag) {
                     buttondata.innerHTML = `<button onclick="get(${order.orderID})">Download csv</button>`;
-                    orderHistoryElement.appendChild(buttondata);
-                    flag = false;
+                    heading.appendChild(buttondata);
+                    // flag = false;
+                    // }
+                    tableData.innerHTML += '</tbody>';
+                    orderCard.appendChild(tableData);
+                    orderHistoryElement.appendChild(orderCard);
                 }
-            }
-        });
-        tableData.innerHTML += '</tbody>';
-        orderHistoryElement.appendChild(tableData);
+            });
+        }
     });
 }
 //Api functions
@@ -478,6 +498,7 @@ async function addOrder(order) {
     if (!response.ok) {
         throw new Error('Failed to add Order');
     }
+    return response.json();
 }
 async function fetchOrders() {
     const apiUrl = 'http://localhost:5242/api/Orders';
@@ -541,10 +562,23 @@ const get = async (orderID) => {
     const items = await fetchItems();
     const userOrders = items.filter((i) => i.orderID == orderID);
     const titleKeys = Object.keys(userOrders[0]);
+    // .push('Product Name');
     const redefinedData = [];
     redefinedData.push(titleKeys);
+    redefinedData[0].push('Product Name');
+    const productsList = await fetchProducts();
     userOrders.forEach((item) => {
-        redefinedData.push(Object.values(item));
+        const index = productsList.findIndex((p) => p.productID === item.productID);
+        const product = productsList[index];
+        const newItem = {
+            itemID: item.itemID,
+            orderID: item.orderID,
+            productID: item.productID,
+            purchaseCount: item.purchaseCount,
+            priceOfItems: item.priceOfItems,
+            ProductName: product.productName
+        };
+        redefinedData.push(Object.values(newItem));
     });
     let csvContent = '';
     redefinedData.forEach((r) => {
